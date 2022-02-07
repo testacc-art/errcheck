@@ -1,0 +1,52 @@
+name: Reusable workflow
+
+on:
+  workflow_call:
+    inputs:
+       go-version:
+         required: false
+         type: string
+         description: "Select the version of go to use. Accepts https://github.com/npm/node-semver"
+         default: ""
+
+jobs:
+  build_go115_nomod:
+    name: go ${{ inputs.go-version }}, GO111MODULE=off
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.GOPATH }}/src/github.com/${{ github.repository }}
+    env:
+      GO111MODULE: 'off'
+      GOPATH: ${{ github.workspace }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: ${{ env.GOPATH }}/src/github.com/${{ github.repository }}
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ inputs.go-version }}
+    - name: debug
+      run: printenv | grep GO
+    - name: Go Get
+      run: go get ./...
+    - name: Build
+      run: go build -v ./...
+    - name: Test
+      run: go test -v ./...
+  build_go115_mod:
+    name: go ${{ inputs.go-version }}, GO111MODULE=on
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: 'on'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ inputs.go-version }}
+    - name: Build
+      run: go build -v ./...
+    - name: Test
+      run: go test -v ./...
