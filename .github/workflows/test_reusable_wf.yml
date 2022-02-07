@@ -8,12 +8,12 @@ jobs:
     name: Test reusable workflow with no params
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/workflow-reusable.yml
+      - uses: testacc-art/errcheck/blob/master/.github/workflows/workflow-reusable.yml@master
         
   test_call_reusable_with_params:
     name: Test reusable workflow with params
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/workflow-reusable.yml
+      - uses: testacc-art/errcheck/blob/master/.github/workflows/workflow-reusable.yml@master
         with:
           go-version: 1.15
